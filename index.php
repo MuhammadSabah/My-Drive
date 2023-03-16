@@ -25,7 +25,7 @@
     <main>
         <div class="bg-gray-200 px-24 py-4"><a href="#" class="text-blue-500 underline py-4 ">Home</a></div>
         <div class="px-24 py-8  ">
-            <div class="border border-gray-300 flex justify-between rounded-md">
+            <form action="./controller/file-manager.php" method="post" class="border border-gray-300 flex justify-between rounded-md">
                 <div class="relative align-center flex">
                     <input type="file" class="hidden" name="file" id="file">
                     <label for="file" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-l-md cursor-pointer hover:bg-gray-300 transition-all ease-in-out duration-200">
@@ -37,7 +37,7 @@
                 <button type="submit" class="ml-4 px-4 py-2 bg-blue-600 text-white rounded-r-md  hover:bg-blue-700 transition-all ease-in-out duration-200">
                     Upload
                 </button>
-            </div>
+            </form>
         </div>
         <div class="px-24 py-4 ">
             <table class="min-w-full divide-y divide-gray-200 table-fixed dark:divide-gray-700 shadow-md">
