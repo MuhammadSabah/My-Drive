@@ -25,7 +25,7 @@
     <main>
         <div class="bg-gray-200 px-24 py-4"><a href="#" class="text-blue-500 underline py-4 ">Home</a></div>
         <div class="px-24 py-8  ">
-            <form action="./controller/file-manager.php" method="post" class="border border-gray-300 flex justify-between rounded-md">
+            <form action="./controller/file-manager.php" enctype="multipart/form-data" method="post" class="border border-gray-300 flex justify-between rounded-md">
                 <div class="relative align-center flex">
                     <input type="file" class="hidden" name="file" id="file">
                     <label for="file" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-l-md cursor-pointer hover:bg-gray-300 transition-all ease-in-out duration-200">
@@ -34,7 +34,7 @@
                     <span id="file-name" class="text-gray-500 ml-4 py-2">No file selected</span>
 
                 </div>
-                <button type="submit" class="ml-4 px-4 py-2 bg-blue-600 text-white rounded-r-md  hover:bg-blue-700 transition-all ease-in-out duration-200">
+                <button type="submit" name="submit" class="ml-4 px-4 py-2 bg-blue-600 text-white rounded-r-md  hover:bg-blue-700 transition-all ease-in-out duration-200">
                     Upload
                 </button>
             </form>
@@ -61,17 +61,26 @@
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200  ">
-                    <tr class="hover:bg-gray-200 ">
-                        <td class="p-4 w-4">
-                            <div class="flex items-center">
-                                <input id="checkbox-table-1" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600">
-                                <label for="checkbox-table-1" class="sr-only">checkbox</label>
+                    <?php
+                    require_once './config/config.php';
+                    $read  = $db->prepare("SELECT * FROM file");
+                    $read->execute();
+
+                    $files = $read->fetchAll(PDO::FETCH_OBJ);
+                    foreach ($files as $file) {
+                        echo "<tr class='hover:bg-gray-200 '>
+                        <td class='p-4 w-4'>
+                            <div class='flex items-center'>
+                                <input id='checkbox-table-1' type='checkbox' class='w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600'>
+                                <label for='checkbox-table-1' class='sr-only'>checkbox</label>
                             </div>
                         </td>
-                        <td class="py-4 px-6 text-sm underline font-medium text-blue-600 whitespace-nowrap cursor-pointer ">Word Document.docx</td>
-                        <td class="py-4 px-6 text-sm font-medium text-gray-500 whitespace-nowrap ">March 10, 2023 10:00am</td>
-                        <td class="py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap ">1.5 MB</td>
-                    </tr>
+                        <td class='py-4 px-6 text-sm underline font-medium text-blue-600 whitespace-nowrap cursor-pointer '>$file->fileName</td>
+                        <td class='py-4 px-6 text-sm font-medium text-gray-500 whitespace-nowrap '>$file->date_modified</td>
+                        <td class='py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap '>$file->size MB</td>
+                    </tr>";
+                    }
+                    ?>
                 </tbody>
             </table>
             <!-- DELETE MODAL -->
