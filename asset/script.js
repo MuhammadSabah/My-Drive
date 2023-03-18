@@ -31,7 +31,22 @@ cancelDeleteModal.addEventListener("click", function () {
 const renameBtn = document.getElementById("rename-btn");
 const renameModal = document.getElementById("rename-modal");
 const cancelRenameModal = document.getElementById("cancel-rename-modal");
+const renameInput = document.getElementById("file-name-input");
+const fileExtensionElement = document.getElementById("file-extension");
+const checkboxes = document.querySelectorAll('input[type="checkbox"]');
 
+checkboxes.forEach(function (checkbox) {
+  checkbox.addEventListener("change", function () {
+    if (this.checked) {
+      let fileName =
+        this.closest("tr").querySelector(".file-name-field").textContent;
+      const fileExtension = fileName.split(".").pop();
+      fileName = fileName.replace("." + fileExtension, "");
+      fileExtensionElement.value = "." + fileExtension;
+      renameInput.value = fileName;
+    }
+  });
+});
 renameBtn.addEventListener("click", function () {
   renameModal.classList.remove("hidden");
 });
@@ -42,10 +57,14 @@ cancelRenameModal.addEventListener("click", function () {
 const newFolderBtn = document.getElementById("new-folder-btn");
 const newFolderModal = document.getElementById("new-folder-modal");
 const cancelNewFolderModal = document.getElementById("new-folder-cancel-modal");
+const createNewFolderBtn = document.getElementById("new-folder-create-button");
 
 newFolderBtn.addEventListener("click", function () {
   newFolderModal.classList.remove("hidden");
 });
 cancelNewFolderModal.addEventListener("click", function () {
+  newFolderModal.classList.add("hidden");
+});
+createNewFolderBtn.addEventListener("click", function () {
   newFolderModal.classList.add("hidden");
 });
