@@ -8,6 +8,7 @@
     <!-- <link href="./dist/output.css" rel="stylesheet"> -->
     <link href="./asset/styles.css" rel="stylesheet">
     <script src="./asset/script.js" defer></script>
+    <script src="./asset/request.js" defer></script>
 
 </head>
 
@@ -23,7 +24,7 @@
         </nav>
     </header>
     <main>
-        <form action="./controller/file-manager.php" method="post" enctype="multipart/form-data">
+        <form enctype="multipart/form-data" id="form">
             <div class="bg-gray-200 px-24 py-4"><a href="#" class="text-blue-500 underline py-4 ">Home</a></div>
             <div class="px-24 py-8  ">
                 <div class="border border-gray-300 flex justify-between rounded-md">
@@ -35,7 +36,7 @@
                         <span id="file-name" class="text-gray-500 ml-4 py-2">No file selected</span>
 
                     </div>
-                    <button type="submit" name="submit-upload" class="ml-4 px-4 py-2 bg-blue-600 text-white rounded-r-md  hover:bg-blue-700 transition-all ease-in-out duration-200">
+                    <button type="button" name="submit-upload" id="upload-submit-button" class="ml-4 px-4 py-2 bg-blue-600 text-white rounded-r-md  hover:bg-blue-700 transition-all ease-in-out duration-200">
                         Upload
                     </button>
                 </div>
@@ -62,7 +63,7 @@
 
                         </tr>
                     </thead>
-                    <tbody class="bg-white divide-y divide-gray-200  ">
+                    <tbody class="bg-white divide-y divide-gray-200" id="file-table-body">
                         <?php
                         require_once './config/config.php';
                         $read  = $db->prepare("SELECT * FROM file");
@@ -81,16 +82,14 @@
                         <td class='file-name-field py-4 px-6 text-sm underline font-medium text-blue-600 whitespace-nowrap cursor-pointer '>$file->fileName</td>
                         <td class='py-4 px-6 text-sm font-medium text-gray-500 whitespace-nowrap '>$file->date_modified</td>
                         <td class='py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap '>$file->size MB</td>
-                    </tr>";
+                        </tr>";
                             $num++;
                         }
                         ?>
-
                     </tbody>
-
                 </table>
                 <!-- DELETE MODAL -->
-                <div class="relative z-10 hidden" aria-labelledby="modal-title" id="delete-modal" role="dialog" x-show="modalOpen" aria-modal="true">
+                <div class=" relative z-10 hidden" aria-labelledby="modal-title" id="delete-modal" role="dialog" x-show="modalOpen" aria-modal="true">
 
                     <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
 
@@ -114,7 +113,7 @@
                                     </div>
                                 </div>
                                 <div class="px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-                                    <button type="submit" name="submit-delete" class="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto">Delete</button>
+                                    <button type="button" name="submit-delete" id="delete-submit-button" class="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto">Delete</button>
                                     <button @click="modalOpen = false" id="cancel-delete-modal" type="button" class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto">Cancel</button>
                                 </div>
                             </div>
@@ -144,7 +143,7 @@
                                     </div>
                                 </div>
                                 <div class=" px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-                                    <button type="submit" name="submit-rename" class="inline-flex w-full justify-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 sm:ml-3 sm:w-auto">Rename</button>
+                                    <button type="button" name="submit-rename" id="confirm-rename-btn" class="inline-flex w-full justify-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 sm:ml-3 sm:w-auto">Rename</button>
                                     <button @click="modalOpen = false" id="cancel-rename-modal" type="button" class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto">Cancel</button>
 
                                 </div>
@@ -163,12 +162,12 @@
                                         <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-[95%]">
                                             <h3 class="text-base font-semibold leading-6 text-gray-900" id="modal-title">New Folder</h3>
                                             <div class="mt-6 ">
-                                                <input type="text" name="new-folder" class=" block w-full px-4 py-2 mt-2  text-gray-700 bg-white border border-gray-300 rounded-md focus:border-blue-500 focus:outline-none focus:shadow-outline-blue " placeholder="Enter name here...">
+                                                <input type="text" name="new-folder" id="new-folder-input" class=" block w-full px-4 py-2 mt-2  text-gray-700 bg-white border border-gray-300 rounded-md focus:border-blue-500 focus:outline-none focus:shadow-outline-blue " placeholder="Enter name here...">
                                             </div>
                                         </div>
                                     </div>
                                     <div class=" px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-                                        <button type="submit" id="new-folder-create-button" name="submit-new-folder" class="inline-flex w-full justify-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 sm:ml-3 sm:w-auto">Create</button>
+                                        <button type="button" id="new-folder-create-button" name="submit-new-folder" class="inline-flex w-full justify-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 sm:ml-3 sm:w-auto">Create</button>
                                         <button @click="modalOpen = false" id="new-folder-cancel-modal" type="button" class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto">Cancel</button>
 
                                     </div>

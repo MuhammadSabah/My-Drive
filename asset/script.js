@@ -18,14 +18,18 @@ document.getElementById("file").addEventListener("change", function (e) {
 const deleteBtn = document.getElementById("delete-btn");
 const deleteModal = document.getElementById("delete-modal");
 const cancelDeleteModal = document.getElementById("cancel-delete-modal");
+const confirmDeleteBtn = document.getElementById("delete-submit-button");
 
-deleteBtn.addEventListener("click", function () {
-  deleteModal.classList.remove("hidden");
-});
-
-cancelDeleteModal.addEventListener("click", function () {
+const hideDeleteModal = function () {
   deleteModal.classList.add("hidden");
-});
+};
+const showDeleteModal = function () {
+  deleteModal.classList.remove("hidden");
+};
+
+deleteBtn.addEventListener("click", showDeleteModal);
+cancelDeleteModal.addEventListener("click", hideDeleteModal);
+// confirmDeleteBtn.addEventListener("click", hideDeleteModal);
 
 // 2) Rename Modal
 const renameBtn = document.getElementById("rename-btn");
@@ -34,6 +38,7 @@ const cancelRenameModal = document.getElementById("cancel-rename-modal");
 const renameInput = document.getElementById("file-name-input");
 const fileExtensionElement = document.getElementById("file-extension");
 const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+// const confirmRenameBtn = document.getElementById("confirm-rename-btn");
 
 checkboxes.forEach(function (checkbox) {
   checkbox.addEventListener("change", function () {
@@ -47,24 +52,30 @@ checkboxes.forEach(function (checkbox) {
     }
   });
 });
-renameBtn.addEventListener("click", function () {
-  renameModal.classList.remove("hidden");
-});
-cancelRenameModal.addEventListener("click", function () {
+
+const hideRenameModal = function () {
   renameModal.classList.add("hidden");
-});
+};
+const showRenameModal = function () {
+  renameModal.classList.remove("hidden");
+};
+renameBtn.addEventListener("click", showRenameModal);
+cancelRenameModal.addEventListener("click", hideRenameModal);
+// confirmRenameBtn.addEventListener("click", hideRenameModal);
+
 // 2) New Folder Modal
 const newFolderBtn = document.getElementById("new-folder-btn");
 const newFolderModal = document.getElementById("new-folder-modal");
 const cancelNewFolderModal = document.getElementById("new-folder-cancel-modal");
 const createNewFolderBtn = document.getElementById("new-folder-create-button");
 
-newFolderBtn.addEventListener("click", function () {
+const hideModal = function () {
+  newFolderModal.classList.add("hidden");
+};
+const showModal = function () {
   newFolderModal.classList.remove("hidden");
-});
-cancelNewFolderModal.addEventListener("click", function () {
-  newFolderModal.classList.add("hidden");
-});
-createNewFolderBtn.addEventListener("click", function () {
-  newFolderModal.classList.add("hidden");
-});
+};
+
+newFolderBtn.addEventListener("click", showModal);
+cancelNewFolderModal.addEventListener("click", hideModal);
+createNewFolderBtn.addEventListener("click", hideModal);
