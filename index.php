@@ -7,8 +7,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- <link href="./dist/output.css" rel="stylesheet"> -->
     <link href="./asset/styles.css" rel="stylesheet">
-    <script src="./asset/script.js" defer></script>
-    <script src="./asset/request.js" defer></script>
+    <script src="./asset/script.js" defer type="module"></script>
+    <script src="./asset/request.js" defer type="module"></script>
 
 </head>
 
@@ -66,28 +66,46 @@
                     <tbody class="bg-white divide-y divide-gray-200" id="file-table-body">
                         <?php
                         require_once './config/config.php';
-                        $read  = $db->prepare("SELECT * FROM file");
-                        $read->execute();
+                        // Files fetch
+                        $read_from_file  = $db->prepare("SELECT * FROM file");
+                        $read_from_file->execute();
+                        $files = $read_from_file->fetchAll(PDO::FETCH_OBJ);
 
-                        $files = $read->fetchAll(PDO::FETCH_OBJ);
-                        $num = 0;
+                        // Folders fetch
+                        $read_from_folder  = $db->prepare("SELECT * FROM folder where name <> 'Home'");
+                        $read_from_folder->execute();
+                        $folders = $read_from_folder->fetchAll(PDO::FETCH_OBJ);
+
+                        // $all_files_and_folders = array_merge($files, $folders);
                         foreach ($files as $file) {
                             echo "<tr class='hover:bg-gray-200 '>
                         <td class='p-4 w-4'>
                             <div class='flex items-center'>
-                                <input id='checkbox-table-$num' name='fileBox[]' value='$file->id'  type='checkbox' class='w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600'>
-                                <label for='checkbox-table-$num' class='sr-only'>checkbox</label>
+                                <input id='checkbox-table-$file->id' name='fileBox[]' value='$file->id'  type='checkbox' class='w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600'>
+                                <label for='checkbox-table-$file->id' class='sr-only'>checkbox</label>
                             </div>
                         </td>
                         <td class='file-name-field py-4 px-6 text-sm underline font-medium text-blue-600 whitespace-nowrap cursor-pointer '>$file->fileName</td>
                         <td class='py-4 px-6 text-sm font-medium text-gray-500 whitespace-nowrap '>$file->date_modified</td>
                         <td class='py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap '>$file->size MB</td>
                         </tr>";
-                            $num++;
+                        }
+                        foreach ($folders as $folder) {
+                            echo "<tr class='hover:bg-gray-200 '>
+                        <td class='p-4 w-4'>
+                            <div class='flex items-center'>
+                                <input id='checkbox-table-$folder->id' name='fileBox[]' value='$folder->id'  type='checkbox' class='w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600'>
+                                <label for='checkbox-table-$folder->id' class='sr-only'>checkbox</label>
+                            </div>
+                        </td>
+                        <td class='file-name-field py-4 px-6 text-sm underline font-medium text-blue-600 whitespace-nowrap cursor-pointer '>$folder->name</td>
+                         <td class='py-4 px-6 text-sm font-medium text-gray-500 whitespace-nowrap '>$folder->date_modified</td>
+                        </tr>";
                         }
                         ?>
                     </tbody>
                 </table>
+
                 <!-- DELETE MODAL -->
                 <div class=" relative z-10 hidden" aria-labelledby="modal-title" id="delete-modal" role="dialog" x-show="modalOpen" aria-modal="true">
 

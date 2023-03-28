@@ -29,7 +29,7 @@ const showDeleteModal = function () {
 
 deleteBtn.addEventListener("click", showDeleteModal);
 cancelDeleteModal.addEventListener("click", hideDeleteModal);
-// confirmDeleteBtn.addEventListener("click", hideDeleteModal);
+confirmDeleteBtn.addEventListener("click", hideDeleteModal);
 
 // 2) Rename Modal
 const renameBtn = document.getElementById("rename-btn");
@@ -38,7 +38,7 @@ const cancelRenameModal = document.getElementById("cancel-rename-modal");
 const renameInput = document.getElementById("file-name-input");
 const fileExtensionElement = document.getElementById("file-extension");
 const checkboxes = document.querySelectorAll('input[type="checkbox"]');
-// const confirmRenameBtn = document.getElementById("confirm-rename-btn");
+const confirmRenameBtn = document.getElementById("confirm-rename-btn");
 
 checkboxes.forEach(function (checkbox) {
   checkbox.addEventListener("change", function () {
@@ -61,7 +61,7 @@ const showRenameModal = function () {
 };
 renameBtn.addEventListener("click", showRenameModal);
 cancelRenameModal.addEventListener("click", hideRenameModal);
-// confirmRenameBtn.addEventListener("click", hideRenameModal);
+confirmRenameBtn.addEventListener("click", hideRenameModal);
 
 // 2) New Folder Modal
 const newFolderBtn = document.getElementById("new-folder-btn");

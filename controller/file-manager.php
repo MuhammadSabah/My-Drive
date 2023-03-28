@@ -1,14 +1,14 @@
 <?php
 require_once("../config/config.php");
+require_once("../controller/get_response.php");
 
-$folderName = 'Home';
+$current_folder = 'Home';
 $date = new DateTime();
 $date_modified = $date->format("Y-m-d H:i:s");
 //
 $request_body = file_get_contents('php://input');
 $data = json_decode($request_body);
 //
-
 // UPLOAD FILE
 if (isset($_FILES['file'])) {
     $fileName = $_FILES['file']['name'];
@@ -16,30 +16,32 @@ if (isset($_FILES['file'])) {
     $path = '../../../../../Downloads/test_files/' . $fileName;
 
     if (move_uploaded_file($fileTempName, $path)) {
-        $insert1 = $db->prepare('INSERT INTO folder(name) VALUE(:folderName)');
-        $insert2 = $db->prepare('INSERT INTO file(fileName,folderName,size,date_modified) VALUE(:fileName,:folderName,:size,:date_modified)');
+        $select = $db->prepare('SELECT * FROM folder WHERE name = :folderName');
+        $select->execute([
+            'folderName' => $current_folder,
+        ]);
+        $folder = $select->fetch();
 
-        $insert2->execute([
+        if (!$folder) {
+            $insert1 = $db->prepare('INSERT INTO folder(name) VALUES(:folderName)');
+            $insert1->execute([
+                'folderName' => $current_folder,
+            ]);
+        }
+
+        $get_folder_id  = $db->prepare("SELECT * FROM folder where name = '$current_folder'");
+        $get_folder_id->execute();
+        $folder_id = $get_folder_id->fetch();
+        $insert_to_file = $db->prepare('INSERT INTO file(fileName,folderId,size,date_modified) VALUES(:fileName,:folderId,:size,:date_modified)');
+
+        $insert_to_file->execute([
             'fileName' => $fileName,
-            'folderName' => $folderName,
+            'folderId' => $folder_id['id'],
             'size' => bcdiv(filesize($path) / (1024 * 1024), 1, 3),
             'date_modified' => strval($date_modified),
         ]);
         //
-        $read = $db->prepare("SELECT * FROM file");
-        $read->execute();
-        $files = $read->fetchAll(PDO::FETCH_OBJ);
-        $data = array();
-        foreach ($files as $file) {
-            $row = array(
-                'id' => $file->id,
-                'fileName' => $file->fileName,
-                'date_modified' => $file->date_modified,
-                'size' => $file->size . ' MB'
-            );
-            array_push($data, $row);
-        }
-        $response = ['tableHTML' => $data];
+        $response = ['tableHTML' => get_response($db)];
         header('Content-Type: application/json');
         echo json_encode($response);
     }
@@ -48,25 +50,21 @@ if (isset($_FILES['file'])) {
 // CREATE NEW FOLDER
 if (isset($data->submitNewFolder)) {
     $newFolderName = $data->newFolder;
-    $insertFolder = $db->prepare('INSERT INTO folder(name) VALUE(:folderName)');
-    $insertFolder->execute([
+    $select = $db->prepare('SELECT * FROM folder WHERE name = :folderName');
+    $select->execute([
         'folderName' => $newFolderName,
     ]);
+    $folder = $select->fetch();
 
-    $read = $db->prepare("SELECT * FROM file");
-    $read->execute();
-    $files = $read->fetchAll(PDO::FETCH_OBJ);
-    $data = array();
-    foreach ($files as $file) {
-        $row = array(
-            'id' => $file->id,
-            'fileName' => $file->fileName,
-            'date_modified' => $file->date_modified,
-            'size' => $file->size . ' MB'
-        );
-        array_push($data, $row);
+    if (!$folder) {
+        $insertFolder = $db->prepare('INSERT INTO folder(name, date_modified) VALUES(:folderName,:date_modified)');
+        $insertFolder->execute([
+            'folderName' => $newFolderName,
+            'date_modified' => strval($date_modified),
+        ]);
     }
-    $response = ['tableHTML' => $data];
+
+    $response = ['tableHTML' => get_response($db)];
     header('Content-Type: application/json');
     echo json_encode($response);
 }
@@ -84,20 +82,7 @@ if (isset($data->fileBoxForDelete)) {
         $response = ['success' => false, 'message' => 'Error: Invalid parameters.'];
     }
 
-    $read = $db->prepare("SELECT * FROM file");
-    $read->execute();
-    $files = $read->fetchAll(PDO::FETCH_OBJ);
-    $data = array();
-    foreach ($files as $file) {
-        $row = array(
-            'id' => $file->id,
-            'fileName' => $file->fileName,
-            'date_modified' => $file->date_modified,
-            'size' => $file->size . ' MB'
-        );
-        array_push($data, $row);
-    }
-    $response = ['tableHTML' => $data];
+    $response = ['tableHTML' => get_response($db)];
     header('Content-Type: application/json');
     echo json_encode($response);
 }
@@ -117,20 +102,7 @@ if (isset($data->fileBox)) {
         ]);
     }
 
-    $read = $db->prepare("SELECT * FROM file");
-    $read->execute();
-    $files = $read->fetchAll(PDO::FETCH_OBJ);
-    $data = array();
-    foreach ($files as $file) {
-        $row = array(
-            'id' => $file->id,
-            'fileName' => $file->fileName,
-            'date_modified' => $file->date_modified,
-            'size' => $file->size . ' MB'
-        );
-        array_push($data, $row);
-    }
-    $response = ['tableHTML' => $data];
+    $response = ['tableHTML' => get_response($db)];
     header('Content-Type: application/json');
     echo json_encode($response);;
 }

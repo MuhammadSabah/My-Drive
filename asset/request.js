@@ -1,15 +1,15 @@
-function generateTableRow(file, num) {
+function generateTableRow(file) {
   return `
     <tr class='hover:bg-gray-200'>
       <td class='p-4 w-4'>
         <div class='flex items-center'>
-          <input id='checkbox-table-${num}' name='fileBox[]' value='${file.id}' type='checkbox' class='w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600'>
-          <label for='checkbox-table-${num}' class='sr-only'>checkbox</label>
+          <input id='checkbox-table-${file.file_id}' name='fileBox[]' value='${file.id}' type='checkbox' class='w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600'>
+          <label for='checkbox-table-${file.file_id}' class='sr-only'>checkbox</label>
         </div>
       </td>
-      <td class='file-name-field py-4 px-6 text-sm underline font-medium text-blue-600 whitespace-nowrap cursor-pointer'>${file.fileName}</td>
+      <td class='file-name-field py-4 px-6 text-sm underline font-medium text-blue-600 whitespace-nowrap cursor-pointer'><a>${file.fileName}</a></td>
       <td class='py-4 px-6 text-sm font-medium text-gray-500 whitespace-nowrap'>${file.date_modified}</td>
-      <td class='py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap'>${file.size} MB</td>
+      <td class='py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap'>${file.size}</td>
     </tr>
   `;
 }
@@ -18,8 +18,8 @@ function renderTableRows(files) {
   const tableBody = document.querySelector("#file-table-body");
   let tableRows = "";
 
-  files.tableHTML.forEach((file, index) => {
-    tableRows += generateTableRow(file, index);
+  files.tableHTML.forEach((file) => {
+    tableRows += generateTableRow(file);
   });
 
   tableBody.innerHTML = tableRows;
@@ -97,8 +97,8 @@ deleteButton.addEventListener("click", (event) => {
 
 ////////////////////////////////////////
 // RENAME FILE
+const confirmRenameBtn = document.querySelector("#confirm-rename-btn");
 const renameForm = document.getElementById("form");
-const confirmRenameBtn = document.getElementById("confirm-rename-btn");
 confirmRenameBtn.addEventListener("click", (event) => {
   event.preventDefault();
   const fileIds = Array.from(
@@ -175,4 +175,3 @@ submitButton.addEventListener("click", (event) => {
       console.log(error.message);
     });
 });
-////////////////////////////////////////

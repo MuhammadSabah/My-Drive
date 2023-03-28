@@ -3,10 +3,10 @@ $host = "localhost";
 $dbname = "drive_manager";
 $user = "root";
 $pass = "";
-$db = null;
+$db;
 try {
     $db = new PDO(
-        "mysql:host=$host;dbname=$dbname;charset=utf8",
+        "mysql:host=$host;dbname=$dbname;",
         $user,
         $pass,
         [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
