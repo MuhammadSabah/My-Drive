@@ -7,15 +7,15 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- <link href="./dist/output.css" rel="stylesheet"> -->
     <link href="./asset/styles.css" rel="stylesheet">
-    <script src="./asset/script.js" defer type="module"></script>
     <script src="./asset/request.js" defer type="module"></script>
+    <script src="./asset/script.js" defer type="module"></script>
 
 </head>
 
 <body>
     <header>
         <nav class="relative px-24 py-4 flex justify-between items-center bg-gray-500">
-            <a class="text-2xl font-bold leading-none text-white" href="">
+            <a class="text-2xl font-bold leading-none text-white">
                 My Drive
             </a>
             <button class="hidden lg:inline-block lg:ml-auto lg:mr-3 py-2 px-4 bg-red-500 hover:bg-red-600 text-sm text-white font-semibold  rounded-md transition duration-200" id="delete-btn">Delete</button>
@@ -25,11 +25,12 @@
     </header>
     <main>
         <form enctype="multipart/form-data" id="form">
-            <div class="bg-gray-200 px-24 py-4"><a href="#" class="text-blue-500 underline py-4 ">Home</a></div>
+            <div class="bg-gray-200 px-24 flex folders-container"><a href="index.php?id=30" class="text-blue-500 underline py-4">Home</a></div>
             <div class="px-24 py-8  ">
                 <div class="border border-gray-300 flex justify-between rounded-md">
                     <div class="relative align-center flex">
                         <input type="file" class="hidden" name="file" id="file">
+                        <input type="hidden" class="hidden-input" name="hidden-input" value="<?php echo $_GET['id'] ?? "" ?>">
                         <label for="file" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-l-md cursor-pointer hover:bg-gray-300 transition-all ease-in-out duration-200">
                             Choose file
                         </label>
@@ -66,42 +67,9 @@
                     <tbody class="bg-white divide-y divide-gray-200" id="file-table-body">
                         <?php
                         require_once './config/config.php';
-                        // Files fetch
-                        $read_from_file  = $db->prepare("SELECT * FROM file");
-                        $read_from_file->execute();
-                        $files = $read_from_file->fetchAll(PDO::FETCH_OBJ);
+                        require_once './controller/render_table.php';
 
-                        // Folders fetch
-                        $read_from_folder  = $db->prepare("SELECT * FROM folder where name <> 'Home'");
-                        $read_from_folder->execute();
-                        $folders = $read_from_folder->fetchAll(PDO::FETCH_OBJ);
-
-                        // $all_files_and_folders = array_merge($files, $folders);
-                        foreach ($files as $file) {
-                            echo "<tr class='hover:bg-gray-200 '>
-                        <td class='p-4 w-4'>
-                            <div class='flex items-center'>
-                                <input id='checkbox-table-$file->id' name='fileBox[]' value='$file->id'  type='checkbox' class='w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600'>
-                                <label for='checkbox-table-$file->id' class='sr-only'>checkbox</label>
-                            </div>
-                        </td>
-                        <td class='file-name-field py-4 px-6 text-sm underline font-medium text-blue-600 whitespace-nowrap cursor-pointer '>$file->fileName</td>
-                        <td class='py-4 px-6 text-sm font-medium text-gray-500 whitespace-nowrap '>$file->date_modified</td>
-                        <td class='py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap '>$file->size MB</td>
-                        </tr>";
-                        }
-                        foreach ($folders as $folder) {
-                            echo "<tr class='hover:bg-gray-200 '>
-                        <td class='p-4 w-4'>
-                            <div class='flex items-center'>
-                                <input id='checkbox-table-$folder->id' name='fileBox[]' value='$folder->id'  type='checkbox' class='w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600'>
-                                <label for='checkbox-table-$folder->id' class='sr-only'>checkbox</label>
-                            </div>
-                        </td>
-                        <td class='file-name-field py-4 px-6 text-sm underline font-medium text-blue-600 whitespace-nowrap cursor-pointer '>$folder->name</td>
-                         <td class='py-4 px-6 text-sm font-medium text-gray-500 whitespace-nowrap '>$folder->date_modified</td>
-                        </tr>";
-                        }
+                        render_table("30", $db);
                         ?>
                     </tbody>
                 </table>

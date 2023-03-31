@@ -1,8 +1,8 @@
 <?php
-function get_response($db)
+function get_response($db, $folder_id)
 {
-    $readFiles = $db->prepare("SELECT * FROM file");
-    $readFiles->execute();
+    $readFiles = $db->prepare("SELECT * FROM file WHERE folderId = :folderId");
+    $readFiles->execute(["folderId" => $folder_id]);
     $files = $readFiles->fetchAll(PDO::FETCH_OBJ);
     //
     $readFolders = $db->prepare("SELECT * FROM folder where name <> 'Home'");
@@ -16,16 +16,18 @@ function get_response($db)
             'fileName' => $file->fileName,
             'folderId' => $file->folderId,
             'date_modified' => $file->date_modified,
-            'size' => $file->size . ' MB'
+            'size' => $file->size . ' MB',
+            'filePath' => $file->file_path,
         );
         array_push($data, $row);
     }
     foreach ($folders as $folder) {
         $row = array(
-            'folderId' => $folder->id,
+            'id' => $folder->id,
             'fileName' => $folder->name,
             'date_modified' => $folder->date_modified,
-            'size' => ""
+            'size' => "",
+            'filePath' => "",
         );
         array_push($data, $row);
     }
