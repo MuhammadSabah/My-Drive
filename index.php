@@ -7,8 +7,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- <link href="./dist/output.css" rel="stylesheet"> -->
     <link href="./asset/styles.css" rel="stylesheet">
-    <script src="./asset/request.js" defer type="module"></script>
     <script src="./asset/script.js" defer type="module"></script>
+    <script src="./asset/request.js" defer type="module"></script>
 
 </head>
 
@@ -68,8 +68,10 @@
                         <?php
                         require_once './config/config.php';
                         require_once './controller/render_table.php';
-
-                        render_table("30", $db);
+                        if (!empty($_GET['id'])) {
+                            $id_param = $_GET['id'] ?? "";
+                            render_table($id_param, $db);
+                        }
                         ?>
                     </tbody>
                 </table>

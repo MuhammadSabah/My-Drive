@@ -130,9 +130,9 @@ if (isset($data->fileBox)) {
 if (isset($data->folderName)) {
     $folderName = $data->folderName;
     $current_folder = $folderName;
-    $folderId = $data->folderId;
+    $newFolderID = $data->folderId;
 
-    $response = ['tableHTML' => get_files($db, $folderId)];
+    $response = ['tableHTML' => get_files($db, $newFolderID)];
     header('Content-Type: application/json');
     echo json_encode($response);;
 }

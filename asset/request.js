@@ -214,7 +214,7 @@ folderElements.forEach((folderElement) => {
       })
       .then((data) => {
         console.log(data);
-        window.location.replace(`index.php?id=${currentFolderID}`);
+        // window.location.replace(`index.php?id=${currentFolderID}`);
         renderTableRows(data);
       })
       .catch((error) => {

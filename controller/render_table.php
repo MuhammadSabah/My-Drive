@@ -6,7 +6,7 @@ function render_table($folderId, $db)
     $read_from_file->execute();
     $files = $read_from_file->fetchAll(PDO::FETCH_OBJ);
     // Folders fetch
-    $read_from_folder  = $db->prepare("SELECT * FROM folder where name <> 'Home'");
+    $read_from_folder  = $db->prepare("SELECT * FROM folder where name <> 'Home' ");
     $read_from_folder->execute();
     $folders = $read_from_folder->fetchAll(PDO::FETCH_OBJ);
 
